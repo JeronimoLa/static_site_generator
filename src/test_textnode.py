@@ -5,17 +5,17 @@ from textnode import TextNode, TextType
 
 class TestTextNode(unittest.TestCase):
 	def test_eq(self):
-		node = TextNode("This is a text node", TextType.bold_text)
-		node2 = TextNode("This is a text node", TextType.bold_text)
+		node = TextNode("This is a text node", TextType.BOLD)
+		node2 = TextNode("This is a text node", TextType.BOLD)
 		self.assertEqual(node, node2)
 	
 	def test_not_eq(self):
-		node = TextNode("This is a text node", TextType.links)
-		node2 = TextNode("This is a text node", TextType.bold_text)
+		node = TextNode("This is a text node", TextType.LINK)
+		node2 = TextNode("This is a text node", TextType.BOLD)
 		self.assertNotEqual(node, node2)
 		
 	def test_url_property(self):
-		node = TextNode("This is a text node", TextType.links)
+		node = TextNode("This is a text node", TextType.LINK)
 		self.assertIsNone(node.url)
 
 	def test_text_types_is_str(self):

@@ -3,12 +3,12 @@ from enum import Enum
 
 
 class TextType(Enum):
-	normal_text = "normal text"
-	bold_text = "bold_text"
-	italic_text = "italic_text"
-	code_text = "code_text"
-	links = "LINKS"
-	images = "images"
+    TEXT = "normal"  # Normal text
+    BOLD = "bold"      # Bold text (**text**)
+    ITALIC = "italic"  # Italic text (_text_)
+    CODE = "code"      # Code text (`text`)
+    LINK = "link"      # Links ([anchor text](url))
+    IMAGE = "image"    # Images (![alt text](url))
 
 
 class TextNode:
