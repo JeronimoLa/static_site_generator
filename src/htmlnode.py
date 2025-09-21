@@ -1,6 +1,6 @@
 
 from typing import Optional
-from textnode import TextNode, TextType
+from textnode import TextType
 
 
 class HTMLNode:
@@ -20,8 +20,8 @@ class HTMLNode:
     def props_to_html(self):
         attributes = ""
         for k, v in self.props.items():
-	        formatted_str = f'{k}="{v}" '
-	        attributes += formatted_str
+            formatted_str = f"{k}='{v}'"
+            attributes += formatted_str
         return attributes
 
     def __repr__(self):
@@ -82,5 +82,5 @@ def text_node_to_html_node(text_node):
             node = LeafNode("img", "", {"src": "https://www.google.com/image", "alt": "alt text"})
             return node
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+    # main()
