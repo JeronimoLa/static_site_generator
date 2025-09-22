@@ -1,6 +1,6 @@
 
 from typing import Optional
-from textnode import TextType
+from textnode import TextNode, TextType
 
 
 class HTMLNode:
@@ -61,26 +61,6 @@ class ParentNode(HTMLNode):
 
         return f"<{self.tag}>{format_str}</{self.tag}>"
 
-def text_node_to_html_node(text_node):
-    match text_node.text_type:
-        case TextType.TEXT:
-            node = LeafNode(None, text_node.text)
-            return node
-        case TextType.BOLD:
-            node = LeafNode("b", text_node.text)
-            return node
-        case TextType.ITALIC:
-            node = LeafNode("i", text_node.text)
-            return node
-        case TextType.CODE:
-            node = LeafNode("code", text_node.text)
-            return node
-        case TextType.LINK:
-            node = LeafNode("a", text_node.text, {"href": "https://www.google.com"})
-            return node
-        case TextType.IMAGE:
-            node = LeafNode("img", "", {"src": "https://www.google.com/image", "alt": "alt text"})
-            return node
 
 # if __name__ == "__main__":
     # main()
