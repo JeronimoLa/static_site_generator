@@ -1,6 +1,5 @@
 
 from typing import Optional
-from textnode import TextNode, TextType
 
 
 class HTMLNode:
