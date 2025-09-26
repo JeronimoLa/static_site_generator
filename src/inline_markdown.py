@@ -1,39 +1,8 @@
-import re, time
+import re
 from textnode import TextNode, TextType
 
 LINK_RE= re.compile(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)")
 IMAGE_RE = re.compile(r"\s*!\[(.+?)\]\((https:[^)]*)\)")
-
-def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
-    new_nodes= []
-    words = []
-    delimiter_count = 0
-    for node in old_nodes:
-        # text_string = node.text.split()
-        for i, word_text in enumerate(node.text.split()):
-            if delimiter in word_text:
-                delimiter_count += 1
-
-                if words and delimiter_count < 2:
-                    new_nodes.append(TextNode(" ".join(words), TextType.TEXT))
-                    words = []
-                
-                words.append(word_text.strip(delimiter))
-                if delimiter_count % 2 == 0 and words:
-                    code_text = " ".join(words)
-                    new_nodes.append(TextNode(code_text, text_type))
-                    words = []
-                    delimiter_count = 0
-
-            elif delimiter_count >= 1:
-                words.append(word_text)
-            
-            else:
-                words.append(word_text)
-
-            if i == len(node.text.split()) -1:
-                new_nodes.append(TextNode(" ".join(words), TextType.TEXT))
-    return new_nodes
 
 def extract_markdown_images(text):
     return [ match for match in IMAGE_RE.findall(text) ]
@@ -41,10 +10,35 @@ def extract_markdown_images(text):
 def extract_markdown_links(text): 
     return [ match for match in LINK_RE.findall(text) ]
 
+def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
+    new_nodes = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+        split_nodes = []
+        sections = old_node.text.split(delimiter)
+        if len(sections) % 2 == 0:
+            raise ValueError("invalid markdown, formatted section not closed")
+
+        for i in range(len(sections)):
+            if sections[i] == "":
+                continue
+            if i % 2 == 0:
+                split_nodes.append(TextNode(sections[i], TextType.TEXT))
+            else:
+                split_nodes.append(TextNode(sections[i], text_type))
+
+        new_nodes.extend(split_nodes)
+    return new_nodes
+        
 def split_nodes_link(old_nodes):
     new_nodes = []
-    for node in old_nodes:
-        text = node.text
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+        text = old_node.text
         pos = 0
         for m in LINK_RE.finditer(text):
             start, end = m.span()
@@ -60,26 +54,6 @@ def split_nodes_link(old_nodes):
 
     return new_nodes
 
-# def split_nodes_image(old_nodes):
-#     new_nodes = []
-#     for node in old_nodes:
-#         text = node.text
-#         pos = 0
-#         for m in IMAGE_RE.finditer(text):
-#             start, end = m.span()
-#             alt, url = m.group(1), m.group(2) 
-
-#             if start > pos:
-#                 new_nodes.append(TextNode(text[pos:start], TextType.TEXT))
-#             new_nodes.append(TextNode(alt, TextType.IMAGE, url))
-#             pos = end
-
-#         if pos < len(text):
-#             new_nodes.append(TextNode(text[pos:], TextType.TEXT))
-
-#     return new_nodes
-
-
 def split_nodes_image(old_nodes):
     new_nodes = []
     for old_node in old_nodes:
@@ -88,6 +62,7 @@ def split_nodes_image(old_nodes):
             continue
         original_text = old_node.text
         images = extract_markdown_images(original_text)
+
         if len(images) == 0:
             new_nodes.append(old_node)
             continue
@@ -112,5 +87,31 @@ def split_nodes_image(old_nodes):
             new_nodes.append(TextNode(original_text, TextType.TEXT))
     return new_nodes
 
+def text_to_textnodes(text):
+    lookup_table = {
+        "`" : TextType.CODE,
+        "**": TextType.BOLD,
+        "_" : TextType.ITALIC
+    }
+
+    initial_node = TextNode(text, TextType.TEXT)
+    for delimiter, text_type in lookup_table.items():
+        if initial_node:
+            node = [initial_node]
+            initial_node = False
+        new_nodes = split_nodes_delimiter(node, delimiter, text_type)
+        node = new_nodes
+
+    nodes = split_nodes_image(node)
+    nodes = split_nodes_link(nodes)
+    return nodes
+
+def print_nodes(node):
+    for n in node:
+        print(n)
+
+
 if __name__ == "__main__":
-    pass
+    text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+    new_nodes = text_to_textnodes(text)
+    print_nodes(new_nodes)
