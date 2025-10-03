@@ -55,6 +55,11 @@ class TestParentNode(unittest.TestCase):
             parent_node = ParentNode("span", [])  # Empty children list
             parent_node.to_html()
         self.assertEqual(str(context.exception), "List is empty")
+        
+    def test_parent_nodes_with_children(self):
+        grandchild_node = LeafNode("p", "This is ")
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
 
 class TestTextToLeafNode(unittest.TestCase):
     def test_text(self):

@@ -13,6 +13,7 @@ def extract_markdown_links(text):
 def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
     new_nodes = []
     for old_node in old_nodes:
+        
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
             continue
@@ -30,6 +31,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
                 split_nodes.append(TextNode(sections[i], text_type))
 
         new_nodes.extend(split_nodes)
+    print(f"New nodes: {new_nodes}")
     return new_nodes
         
 def split_nodes_link(old_nodes):
@@ -94,6 +96,7 @@ def text_to_textnodes(text):
         "_" : TextType.ITALIC
     }
 
+    print(text)
     initial_node = TextNode(text, TextType.TEXT)
     for delimiter, text_type in lookup_table.items():
         if initial_node:
@@ -106,12 +109,32 @@ def text_to_textnodes(text):
     nodes = split_nodes_link(nodes)
     return nodes
 
+def markdown_to_blocks(mk):
+    filtered_blocks = []
+    blocks = mk.split("\n\n")
+    for block in blocks:
+        if block == "":
+            continue
+        filtered_blocks.append(block.strip())
+
+    return filtered_blocks
+
+
 def print_nodes(node):
     for n in node:
         print(n)
 
 
 if __name__ == "__main__":
-    text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-    new_nodes = text_to_textnodes(text)
-    print_nodes(new_nodes)
+    mk = """
+# This is a heading
+
+This is a paragraph of text. It has some **bold** and _italic_ words inside of it.
+
+- This is the first list item in a list block
+- This is a list item
+- This is another list item
+"""
+    markdown_to_blocks(mk)
+
+    # print_nodes(new_nodes)
