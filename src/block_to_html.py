@@ -7,12 +7,11 @@ from htmlnode import LeafNode, ParentNode
 def markdown_to_html_node(markdown):
     sections = []
     blocks = markdown_to_blocks(markdown)
-    # print(blocks)
     for block in blocks:
     
         html_nodes = []
         
-        block_type = block_to_block_type(block) # type paragrah
+        block_type = block_to_block_type(block)
         if block_type == BlockType.CODE:
             code_text = "\n".join(block.splitlines()[1:-1])+"\n"
             text_nodes = [TextNode(code_text, TextType.CODE)]
@@ -21,8 +20,6 @@ def markdown_to_html_node(markdown):
             block = " ".join(block.splitlines())
             text_nodes = text_to_textnodes(block)
             
-        # print(block)
-        
         
         for text_node in text_nodes:
             html = text_node_to_html_node(text_node)
@@ -36,13 +33,22 @@ def markdown_to_html_node(markdown):
     return parent_node
         
 if __name__ == "__main__":
-
     md = """
-```
-This is text that _should_ remain
-the **same** even with inline stuff
-```
+# This is a heading
+
+This is a paragraph of text. It has some **bold** and _italic_ words inside of it.
+
+- This is the first list item in a list block
+- This is a list item
+- This is another list item    
+    
 """
+#     md = """
+# ```
+# This is text that _should_ remain
+# the **same** even with inline stuff
+# ```
+# """
 
     node = markdown_to_html_node(md)
     print(node.to_html())

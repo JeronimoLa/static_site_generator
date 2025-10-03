@@ -12,7 +12,7 @@ class BlockType(Enum):
 def is_heading(line):
     if line.startswith("#"):
         headings_count = 0
-        for i in mk:
+        for i in line:
             if i == "#":
                 headings_count += 1
                 continue
@@ -23,7 +23,6 @@ def is_heading(line):
                 return False
             if line[headings_count] == " " and line[headings_count+1] != " ":
                 return True
-            
     return False
 
 def validate_quote_block(lines):
