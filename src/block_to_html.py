@@ -1,9 +1,8 @@
-from inline_markdown import markdown_to_blocks, text_to_textnodes
-from markdown_blocks import block_to_block_type
+from inline_markdown import markdown_to_blocks, text_to_textnodes, TextNode, TextType
+from markdown_blocks import block_to_block_type, BlockType
 from textnode import text_node_to_html_node
 from htmlnode import LeafNode, ParentNode
 
-import time 
 
 def markdown_to_html_node(markdown):
     sections = []
@@ -14,44 +13,37 @@ def markdown_to_html_node(markdown):
         html_nodes = []
         
         block_type = block_to_block_type(block) # type paragrah
-        # this will be what tells me the inside element within the div is ""
-        text_nodes = text_to_textnodes(block)
-        # print(text_nodes)
+        if block_type == BlockType.CODE:
+            code_text = "\n".join(block.splitlines()[1:-1])+"\n"
+            text_nodes = [TextNode(code_text, TextType.CODE)]
+
+        else:
+            block = " ".join(block.splitlines())
+            text_nodes = text_to_textnodes(block)
+            
+        # print(block)
+        
         
         for text_node in text_nodes:
             html = text_node_to_html_node(text_node)
-            # print(type(html))
             html_nodes.append(html)
-            # if html.tag is None:
-                # node = LeafNode("p", html.value)
-                # print(node.to_html())
-            
-                # print("here")
-        # print(len(html_nodes))
+
         paragraph_node = ParentNode(block_type.value, html_nodes)
-        # print(paragraph_node.to_html())
         sections.append(paragraph_node)
-        # print(parent_node.tag)
         
     parent_node = ParentNode("div", sections)
         
-    # print(parent_node.to_html())
     return parent_node
-
-    # time.sleep(100)
         
-
-        
-    
-    
-    
 if __name__ == "__main__":
-    md = """ 
+
+    md = """
 ```
 This is text that _should_ remain
 the **same** even with inline stuff
 ```
 """
+
     node = markdown_to_html_node(md)
     print(node.to_html())
     
