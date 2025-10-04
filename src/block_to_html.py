@@ -34,15 +34,28 @@ def heading_block_to_html(block):
 
 def quote_block_to_html(block):
     cleaned_text = "</br>".join([ block.strip("> ") for block in block.splitlines() ])
-    wtf = text_to_textnodes(cleaned_text)
-    html_nodes = get_html_nodes(wtf)
-    inline = ParentNode("p", html_nodes)
-    return ParentNode("blockquote", [inline])
+    text_nodes = text_to_textnodes(cleaned_text)
+    html_nodes = get_html_nodes(text_nodes)
+    node = ParentNode("p", html_nodes)
+    return ParentNode("blockquote", [node])
 
 def unordered_list_to_html(block):
-    pass
+    cleaned_text = [ block.strip("- ") for block in block.splitlines() ]
+    list_nodes = []
+    for text in cleaned_text:
+        text_nodes = text_to_textnodes(text)
+        html_nodes = get_html_nodes(text_nodes)
+        list_nodes.append(ParentNode("li", html_nodes))
+    return ParentNode("ul", list_nodes)
+
 def ordered_list_to_html(block):
-    pass
+    cleaned_text = [ " ".join(block.split()[1:]) for block in block.splitlines() ]
+    list_nodes = []
+    for text in cleaned_text:
+        wtf = text_to_textnodes(text)
+        html_nodes = get_html_nodes(wtf)
+        list_nodes.append(ParentNode("li", html_nodes))
+    return ParentNode("ol", list_nodes)
 
 def block_type_to_html(block_type: BlockType, block):
     match block_type:
@@ -54,10 +67,10 @@ def block_type_to_html(block_type: BlockType, block):
             return heading_block_to_html(block)
         case BlockType.QUOTE: 
             return quote_block_to_html(block)
-        case BlockType.UNORDERED_LIST: pass
-        
-        case BlockType.ORDERED_LIST: pass
-        
+        case BlockType.UNORDERED_LIST:
+            return unordered_list_to_html(block)
+        case BlockType.ORDERED_LIST: 
+            return ordered_list_to_html(block)
 
 def markdown_to_html_node(markdown):
     sections = []
@@ -72,9 +85,9 @@ def markdown_to_html_node(markdown):
         
 if __name__ == "__main__":
     md = """
-> This is the first line of the quote.
-> This is the second line of the quote.
-> This is the third line of the quote.
+1. First item
+2. Second item
+3. Third item
 
 """
    
