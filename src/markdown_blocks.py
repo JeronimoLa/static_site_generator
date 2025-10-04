@@ -2,12 +2,13 @@
 from enum import Enum
 
 class BlockType(Enum):
-    PARAGRAPH = "p"
-    HEADING =   "h" 
-    CODE =      "pre"
-    QUOTE =     "blockquote"
-    UNORDERED_LIST = "ul"
-    ORDERED_LIST = "ol"
+    """meaningful controlled constant's rather than passing strings everywhere."""
+    PARAGRAPH = "paragraph"
+    HEADING =   "heading" 
+    CODE =      "code"
+    QUOTE =     "quote"
+    UNORDERED_LIST = "unordered_list"
+    ORDERED_LIST = "ordered_list"
 
 def is_heading(line):
     if line.startswith("#"):
@@ -40,7 +41,6 @@ def is_unordered_list(lines):
             return False
     return True
 
-    
 def is_ordered_list(lines):
     for i, line in enumerate(lines.split("\n"), start=1):
         if len(line.split()) < 2:
@@ -49,32 +49,19 @@ def is_ordered_list(lines):
             return False
     return True
 
-
-
-
 def block_to_block_type(mk): 
-
     if is_heading(mk):
-        return BlockType.HEADING
-    
+        return BlockType.HEADING    
     if mk.startswith("```") and mk.endswith("```"):
         return BlockType.CODE
-    
     if validate_quote_block(mk):
         return BlockType.QUOTE
-    
     if is_unordered_list(mk):
         return BlockType.UNORDERED_LIST
-
     if is_ordered_list(mk):
         return BlockType.ORDERED_LIST
-        
     return BlockType.PARAGRAPH
 
 
 if __name__ == "__main__":
-
-
-    mk = """1.dsdd
-2. dcsd"""
-    print(block_to_block_type(mk))
+    pass

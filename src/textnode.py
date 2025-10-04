@@ -4,6 +4,7 @@ from htmlnode import LeafNode
 
 
 class TextType(Enum):
+    """meaningful controlled constant's rather than passing strings everywhere."""
     TEXT = "normal"  # Normal text
     BOLD = "bold"      # Bold text (**text**)
     ITALIC = "italic"  # Italic text (_text_)
@@ -28,8 +29,7 @@ class TextNode:
 		return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
 
 def text_node_to_html_node(text_node):
-    # print(text_node)
-    
+        
     match text_node.text_type:
         case TextType.TEXT:
             node = LeafNode(None, text_node.text)
