@@ -19,7 +19,7 @@ class HTMLNode:
     def props_to_html(self):
         attributes = ""
         for k, v in self.props.items():
-            formatted_str = f"{k}='{v}'"
+            formatted_str = f'{k}="{v}"'
             attributes += formatted_str
         return attributes
 
@@ -53,7 +53,7 @@ class ParentNode(HTMLNode):
         if self.children == None or self.children == []:
             raise ValueError("List is empty")
 
-        format_str = ''
+        format_str = ""
         for child in self.children:
             html_str = child.to_html()
             format_str += html_str

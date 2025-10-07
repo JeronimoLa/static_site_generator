@@ -1,5 +1,6 @@
 import os, time
 from block_to_html import markdown_to_html_node
+
 from jinja2 import Template
 
 import shutil
@@ -27,8 +28,8 @@ def generate_page(dir_path_content, template_path, dest_dir_path, base_path):
                 title = extract_title(data)
                 template = Template(template_content)
                 html_text = template.render(Title=title, Content=html_str)
-                html_text = html_text.replace("href='/'", f'href="{base_path}"')
-                html_text = html_text.replace("src='/'", f'src="{base_path}"')
+                html_text = html_text.replace('href="/', f'href="{base_path}')
+                html_text = html_text.replace('src="/', f'src="{base_path}')
 
                 with open(dest_dir_path+"/index.html", "w") as fi:
                     fi.write(html_text)
