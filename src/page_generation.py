@@ -39,3 +39,4 @@ def generate_page(dir_path_content, template_path, dest_dir_path, base_path):
     
 
 if __name__ == "__main__": pass
+
