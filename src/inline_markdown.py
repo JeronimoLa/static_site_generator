@@ -2,7 +2,7 @@ import re
 from textnode import TextNode, TextType
 
 LINK_RE= re.compile(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)")
-IMAGE_RE = re.compile(r"\s*!\[(.+?)\]\((https:[^)]*)\)")
+IMAGE_RE = re.compile(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)")
 
 def extract_markdown_images(text):
     return [ match for match in IMAGE_RE.findall(text) ]
@@ -63,7 +63,6 @@ def split_nodes_image(old_nodes):
             continue
         original_text = old_node.text
         images = extract_markdown_images(original_text)
-
         if len(images) == 0:
             new_nodes.append(old_node)
             continue

@@ -15,6 +15,7 @@ def get_html_nodes(text_nodes):
 def paragraph_block_to_html(block):
     block = " ".join(block.splitlines())
     text_nodes = text_to_textnodes(block)
+
     html_nodes = get_html_nodes(text_nodes)
     return ParentNode("p", html_nodes)
 
@@ -36,8 +37,8 @@ def quote_block_to_html(block):
     cleaned_text = "</br>".join([ block.strip("> ") for block in block.splitlines() ])
     text_nodes = text_to_textnodes(cleaned_text)
     html_nodes = get_html_nodes(text_nodes)
-    node = ParentNode("p", html_nodes)
-    return ParentNode("blockquote", [node])
+    # node = ParentNode("p", html_nodes)
+    return ParentNode("blockquote", html_nodes)
 
 def unordered_list_to_html(block):
     cleaned_text = [ block.strip("- ") for block in block.splitlines() ]
@@ -93,4 +94,3 @@ if __name__ == "__main__":
    
     node = markdown_to_html_node(md)
     print(node.to_html())
-    
